@@ -59,27 +59,31 @@ public class Player extends Actor {
             Gdx.app.log("key","pressed");
             body.applyForceToCenter(0f, 1e10f, true);
         }
-    }
-
-    public void up() {
-        Vector2 vel = body.getLinearVelocity();
-        Vector2 pos = body.getPosition();
-        body.applyLinearImpulse(-8e9f, 0, pos.x, pos.y, true);
-    }
-
-    public void down() {
-        Vector2 vel = body.getLinearVelocity();
-        Vector2 pos = body.getPosition();
-        body.applyLinearImpulse(8e9f, 0, pos.x, pos.y, true);
+        if (Gdx.input.isKeyPressed(Input.Keys.D)) right();
+        if (Gdx.input.isKeyPressed(Input.Keys.A)) left();
+        if (Gdx.input.isKeyPressed(Input.Keys.S)) down();
+        if (Gdx.input.isKeyPressed(Input.Keys.W)) up();
     }
 
     public void left() {
         Vector2 vel = body.getLinearVelocity();
         Vector2 pos = body.getPosition();
-        body.applyLinearImpulse(0, -8e9f, pos.x, pos.y, true);
+        body.applyLinearImpulse(-8e9f, 0, pos.x, pos.y, true);
     }
 
     public void right() {
+        Vector2 vel = body.getLinearVelocity();
+        Vector2 pos = body.getPosition();
+        body.applyLinearImpulse(8e9f, 0, pos.x, pos.y, true);
+    }
+
+    public void down() {
+        Vector2 vel = body.getLinearVelocity();
+        Vector2 pos = body.getPosition();
+        body.applyLinearImpulse(0, -8e9f, pos.x, pos.y, true);
+    }
+
+    public void up() {
         Vector2 vel = body.getLinearVelocity();
         Vector2 pos = body.getPosition();
         body.applyLinearImpulse(0, 8e9f, pos.x, pos.y, true);
