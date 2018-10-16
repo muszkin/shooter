@@ -13,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.FillViewport;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.shooter.game.objects.Player;
 import com.shooter.game.objects.Surface;
@@ -28,6 +29,7 @@ public class GameScreen implements Screen {
         this.game = game;
         this.stage = new Stage(new FillViewport(1920,1080));
 
+
         stage.addListener(new InputListener(){
             @Override
             public boolean keyUp(InputEvent event, int keycode) {
@@ -40,7 +42,7 @@ public class GameScreen implements Screen {
 
         Box2D.init();
 
-        this.world = new World(new Vector2(0,0),true);
+        this.world = new World(new Vector2(0,-1e5f),true);
 
         Player player = new Player(world,Gdx.graphics.getWidth()/4 ,Gdx.graphics.getHeight()/4);
         player.setBounds(player.getX(),player.getY(),player.getWidth(),player.getHeight());
@@ -58,6 +60,7 @@ public class GameScreen implements Screen {
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 0, 0, 255);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        debugRenderer.render(world,stage.getCamera().combined);
         world.step(1/60f, 6, 6);
         stage.act();
         stage.draw();
