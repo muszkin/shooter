@@ -26,7 +26,7 @@ public class GameScreen implements Screen {
 
     public GameScreen(final Game game) {
         this.game = game;
-        this.stage = new Stage(new FillViewport(800,600));
+        this.stage = new Stage(new FillViewport(1920,1080));
 
         stage.addListener(new InputListener(){
             @Override
@@ -34,15 +34,16 @@ public class GameScreen implements Screen {
                 if (keycode == Input.Keys.ESCAPE){
                     game.setScreen(new OptionsScreen(game,GameScreen.this));
                 }
-                return false;
+                return true;
             }
         });
 
         Box2D.init();
 
-        this.world = new World(new Vector2(0,-100f),true);
+        this.world = new World(new Vector2(0,0),true);
 
         Player player = new Player(world,Gdx.graphics.getWidth()/4 ,Gdx.graphics.getHeight()/4);
+        player.setBounds(player.getX(),player.getY(),player.getWidth(),player.getHeight());
         stage.addActor(player);
         stage.addActor(new Surface(world,0,0,Gdx.graphics.getWidth(),Gdx.graphics.getHeight()/10,0));
         debugRenderer = new Box2DDebugRenderer();
@@ -60,7 +61,6 @@ public class GameScreen implements Screen {
         world.step(1/60f, 6, 6);
         stage.act();
         stage.draw();
-        debugRenderer.render(world,stage.getCamera().combined);
     }
 
     @Override

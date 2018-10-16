@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
@@ -15,12 +16,13 @@ public class Player extends Actor {
     private static final float MAX_VELOCITY = 10f;
     private World world;
     private Body body;
-    private Texture playerTexture = new Texture(Gdx.files.internal("sprite/player.png"));
+    private Sprite playerSprite = new Sprite(new Texture(Gdx.files.internal("sprite/player.png")));
 
     public Player (World world,float pos_x,float pos_y) {
         this.setPosition(pos_x,pos_y);
-        this.setWidth(playerTexture.getWidth());
-        this.setHeight(playerTexture.getHeight());
+        this.setWidth(playerSprite.getWidth());
+        this.setHeight(playerSprite.getHeight());
+
 
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
@@ -29,7 +31,7 @@ public class Player extends Actor {
         body = world.createBody(bodyDef);
 
         PolygonShape shape = new PolygonShape();
-        shape.setAsBox(this.getWidth(),this.getHeight());
+        shape.setAsBox(this.getWidth() / 2,this.getHeight() / 2);
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
@@ -37,7 +39,7 @@ public class Player extends Actor {
         fixtureDef.friction = 0.4f;
         fixtureDef.restitution = 0.6f;
         body.createFixture(fixtureDef);
-
+        body.setUserData(this);
         shape.dispose();
 
         this.addListener(new PlayerInputListener(this));
@@ -46,23 +48,24 @@ public class Player extends Actor {
     @Override
     public void draw(Batch batch, float parentAlpha) {
         super.draw(batch, parentAlpha);
-        batch.draw(playerTexture,this.getX(),this.getY(),this.getWidth(),this.getHeight());
+        ((Player)body.getUserData()).setBounds(playerSprite.getX(),playerSprite.getY(),playerSprite.getWidth(),playerSprite.getHeight());
+        ((Player)body.getUserData()).getPlayerSprite().draw(batch);
     }
 
     @Override
     public void act(float delta) {
         super.act(delta);
-        this.setRotation(body.getAngle( )*  MathUtils.radiansToDegrees);
-        this.setPosition(body.getPosition().x,body.getPosition().y);
+        ((Player)body.getUserData()).getPlayerSprite().setPosition(body.getPosition().x - ( this.getWidth() /2 ) ,body.getPosition().y - (this.getHeight() / 2));
+        ((Player)body.getUserData()).getPlayerSprite().setRotation(body.getAngle() *  MathUtils.radiansToDegrees);
         Gdx.app.log("Pos ",String.format("x: %f,y: %f",body.getPosition().x,body.getPosition().y));
         if (Gdx.input.isKeyPressed(Input.Keys.SPACE)){
             Gdx.app.log("key","pressed");
             body.applyForceToCenter(0f, 1e10f, true);
         }
-        if (Gdx.input.isKeyPressed(Input.Keys.D)) right();
-        if (Gdx.input.isKeyPressed(Input.Keys.A)) left();
-        if (Gdx.input.isKeyPressed(Input.Keys.S)) down();
-        if (Gdx.input.isKeyPressed(Input.Keys.W)) up();
+//        if (Gdx.input.isKeyPressed(Input.Keys.D)) right();
+//        if (Gdx.input.isKeyPressed(Input.Keys.A)) left();
+//        if (Gdx.input.isKeyPressed(Input.Keys.S)) down();
+//        if (Gdx.input.isKeyPressed(Input.Keys.W)) up();
     }
 
     public void left() {
@@ -89,4 +92,11 @@ public class Player extends Actor {
         body.applyLinearImpulse(0, 8e9f, pos.x, pos.y, true);
     }
 
+    public Sprite getPlayerSprite() {
+        return playerSprite;
+    }
+
+    public void setPlayerSprite(Sprite playerSprite) {
+        this.playerSprite = playerSprite;
+    }
 }
