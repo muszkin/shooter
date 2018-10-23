@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -14,6 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 public class MenuScreen implements Screen {
@@ -23,9 +25,9 @@ public class MenuScreen implements Screen {
 
     public MenuScreen(final Game game) {
         this.game = game;
-        this.stage =  new Stage(new ScreenViewport());
-        int rowHeight = Gdx.graphics.getHeight() / 12;
-        int colWidth = Gdx.graphics.getWidth() / 12;
+        this.stage =  new Stage(new ScreenViewport(new OrthographicCamera()));
+        int rowHeight = Gdx.graphics.getHeight() / 16;
+        int colWidth = Gdx.graphics.getWidth() / 16;
 
         Label.LabelStyle label1Style = new Label.LabelStyle();
         BitmapFont myFont = new BitmapFont(Gdx.files.internal("font/menu.fnt"));

@@ -5,29 +5,27 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Box2D;
-import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
-import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.utils.viewport.FillViewport;
-import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.shooter.game.generator.DungeonGenerator;
+import com.shooter.game.helpers.Constants;
 import com.shooter.game.objects.Player;
-import com.shooter.game.objects.Surface;
 
 public class GameScreen implements Screen {
 
     private Stage stage;
     private Game game;
-    private World world;
-    private Box2DDebugRenderer debugRenderer;
+    private DungeonGenerator dungeonGenerator;
+    private Player player;
 
     public GameScreen(final Game game) {
         this.game = game;
-        this.stage = new Stage(new FillViewport(1920,1080));
+        this.stage = new Stage(new ScreenViewport(new OrthographicCamera(Constants.worldSizeX  ,Constants.worldSizeY )));
 
 
         stage.addListener(new InputListener(){
@@ -40,15 +38,9 @@ public class GameScreen implements Screen {
             }
         });
 
-        Box2D.init();
-
-        this.world = new World(new Vector2(0,-1e5f),true);
-
-        Player player = new Player(world,Gdx.graphics.getWidth()/4 ,Gdx.graphics.getHeight()/4);
-        player.setBounds(player.getX(),player.getY(),player.getWidth(),player.getHeight());
+        player = new Player(stage.getWidth()/2 ,stage.getHeight()/2,stage.getViewport().getCamera());
         stage.addActor(player);
-        stage.addActor(new Surface(world,0,0,Gdx.graphics.getWidth(),Gdx.graphics.getHeight()/10,0));
-        debugRenderer = new Box2DDebugRenderer();
+        dungeonGenerator = new DungeonGenerator(stage);
     }
 
     @Override
@@ -60,10 +52,14 @@ public class GameScreen implements Screen {
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 0, 0, 255);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        debugRenderer.render(world,stage.getCamera().combined);
-        world.step(1/60f, 6, 6);
+        dungeonGenerator.getRenderer().setView((OrthographicCamera) stage.getCamera());
+        dungeonGenerator.getRenderer().render();
+        stage.getCamera().position.x = player.getX();
+        stage.getCamera().position.y = player.getY();
         stage.act();
         stage.draw();
+        Gdx.app.log("position (x,y)",String.format("(%f,%f)",player.getX(),player.getY()));
+        Gdx.app.log("camera position (x,y)",String.format("(%f,%f)",stage.getCamera().position.x,stage.getCamera().position.y));
     }
 
     @Override
