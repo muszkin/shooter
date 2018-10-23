@@ -23,11 +23,9 @@ public class Player extends Actor {
     private Animation<TextureRegion> currentAnimation;
     private float animationTime = 0f;
     private PlayerMove lastMove = PlayerMove.DOWN;
-    private final Camera camera;
 
-    public Player (float pos_x, float pos_y, Camera camera) {
+    public Player (float pos_x, float pos_y) {
         this.setPosition(pos_x ,pos_y);
-        this.camera = camera;
         Texture playerSheet = new Texture(Gdx.files.internal("sprite/player.png"));
         TextureRegion[][] textureRegion = TextureRegion.split(playerSheet, playerSheet.getWidth() / 3, playerSheet.getHeight() / 4);
         this.walkTop = new Animation<TextureRegion>(0.1f,(textureRegion[3][0]),(textureRegion[3][1]),(textureRegion[3][2]));
@@ -48,7 +46,7 @@ public class Player extends Actor {
         this.noWalkLeft.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
         this.currentAnimation = noWalkFace;
         //this.setSize(textureRegion[0][1].getTexture().getWidth() * (1/16f) , textureRegion[0][1].getTexture().getHeight() * (1/16f) );
-        this.scaleBy(this.getScaleX() * 1/16f, this.getScaleY() * 1/16f);
+        this.scaleBy(16f , 16f);
     }
 
     @Override

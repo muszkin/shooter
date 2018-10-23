@@ -38,7 +38,7 @@ public class GameScreen implements Screen {
             }
         });
 
-        player = new Player(stage.getWidth()/2 ,stage.getHeight()/2,stage.getViewport().getCamera());
+        player = new Player(stage.getWidth()/2 ,stage.getHeight()/2);
         stage.addActor(player);
         dungeonGenerator = new DungeonGenerator(stage);
     }

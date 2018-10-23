@@ -17,7 +17,7 @@ public class DungeonGenerator {
 
     private TiledMap tiledMap = new TiledMap();
     private String layers[] = new String[2];
-    private TiledMapRenderer renderer;
+    private OrthogonalTiledMapRenderer renderer;
     private TextureRegion chooseTexture[][];
 
     public DungeonGenerator(Stage stage) {
@@ -45,26 +45,27 @@ public class DungeonGenerator {
                     TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
                     float val = grid.get(x,y);
                     if (l == 0 ) {
-                        chooseTexture = wallTexture;
+                        StaticTiledMapTile staticTiledMapTile = new StaticTiledMapTile(floorTexture[7][1]);
+                        staticTiledMapTile.getProperties().put("solid",false);
+                        if (val == 0.5f) {
+                            staticTiledMapTile.setTextureRegion(floorTexture[14][8]);
+                        }
+                        cell.setTile(staticTiledMapTile);
+                        tiledMapTileLayer.setCell(x,y,cell);
                     }else{
-                        chooseTexture = floorTexture;
+                        if (val == 1f) {
+                            StaticTiledMapTile staticTiledMapTile = new StaticTiledMapTile(floorTexture[3][3]);
+                            staticTiledMapTile.getProperties().put("solid",true);
+                            cell.setTile(staticTiledMapTile);
+                            tiledMapTileLayer.setCell(x, y, cell);
+                        }
                     }
-                    TextureRegion cellTexture = chooseTexture[0][0];
-                    if (val == 0.0f) {
-                        cellTexture = chooseTexture[7][1];
-                    }else if (val == 0.5f) {
-                        cellTexture = chooseTexture[14][8];
-                    }else {
-                        cellTexture = wallTexture[3][3];
-                    }
-                    StaticTiledMapTile staticTiledMapTile = new StaticTiledMapTile(cellTexture);
-                    cell.setTile(staticTiledMapTile);
-                    tiledMapTileLayer.setCell(x,y,cell);
+
                 }
             }
             mapLayers.add(tiledMapTileLayer);
         }
-        renderer = new OrthogonalTiledMapRenderer(tiledMap);
+        renderer = new OrthogonalTiledMapRenderer(tiledMap,2f);
 
     }
 
@@ -101,11 +102,12 @@ public class DungeonGenerator {
         this.tiledMap = tiledMap;
     }
 
-    public TiledMapRenderer getRenderer() {
+
+    public OrthogonalTiledMapRenderer getRenderer() {
         return renderer;
     }
 
-    public void setRenderer(TiledMapRenderer renderer) {
+    public void setRenderer(OrthogonalTiledMapRenderer renderer) {
         this.renderer = renderer;
     }
 }
