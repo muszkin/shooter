@@ -7,6 +7,9 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.maps.MapLayer;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -37,10 +40,9 @@ public class GameScreen implements Screen {
                 return true;
             }
         });
-
-        player = new Player(stage.getWidth()/2 ,stage.getHeight()/2);
-        stage.addActor(player);
         dungeonGenerator = new DungeonGenerator(stage);
+        player = new Player(dungeonGenerator.playerPositionX ,dungeonGenerator.playerPositionY);
+        stage.addActor(player);
     }
 
     @Override
@@ -54,12 +56,18 @@ public class GameScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         dungeonGenerator.getRenderer().setView((OrthographicCamera) stage.getCamera());
         dungeonGenerator.getRenderer().render();
-        stage.getCamera().position.x = player.getX();
-        stage.getCamera().position.y = player.getY();
+        if (player.getX() + stage.getViewport().getScreenWidth()/2 >= Constants.worldSizeX ||
+            player.getX() - stage.getViewport().getScreenWidth()/2 <= 0){
+        }else{
+            stage.getCamera().position.x = player.getX();
+        }
+        if (player.getY() + stage.getViewport().getScreenHeight()/2 >= Constants.worldSizeY ||
+            player.getY() - stage.getViewport().getScreenHeight()/2 <= 0) {
+        }else {
+            stage.getCamera().position.y = player.getY();
+        }
         stage.act();
         stage.draw();
-        Gdx.app.log("position (x,y)",String.format("(%f,%f)",player.getX(),player.getY()));
-        Gdx.app.log("camera position (x,y)",String.format("(%f,%f)",stage.getCamera().position.x,stage.getCamera().position.y));
     }
 
     @Override

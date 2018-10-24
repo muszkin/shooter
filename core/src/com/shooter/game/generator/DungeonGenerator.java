@@ -18,11 +18,12 @@ public class DungeonGenerator {
     private TiledMap tiledMap = new TiledMap();
     private String layers[] = new String[2];
     private OrthogonalTiledMapRenderer renderer;
-    private TextureRegion chooseTexture[][];
+    public int playerPositionX = 0;
+    public int playerPositionY = 0;
 
     public DungeonGenerator(Stage stage) {
-        layers[0] = "Walls";
-        layers[1] = "Floors";
+        layers[0] = "Floor";
+        layers[1] = "Wall";
         Grid grid = new Grid(100);
         Texture textureForWalls = new Texture(Gdx.files.internal("sprite/Wall.png"));
         TextureRegion wallTexture[][] = TextureRegion.split(textureForWalls,textureForWalls.getWidth()/21,textureForWalls.getHeight()/51);
@@ -37,24 +38,33 @@ public class DungeonGenerator {
         dungeonGenerator.generate(grid);
 
         MapLayers mapLayers = getTiledMap().getLayers();
-
+        boolean playerPositionSetted = false;
+        StaticTiledMapTile staticTiledMapTile = new StaticTiledMapTile(floorTexture[1][1]);
         for (int l = 0;l < layers.length; l++) {
             TiledMapTileLayer tiledMapTileLayer = new TiledMapTileLayer(Constants.worldSizeX,Constants.worldSizeY,16,16);
+            tiledMapTileLayer.setName(layers[l]);
             for (int x = 0; x < grid.getWidth(); x++) {
                 for (int y = 0; y < grid.getHeight(); y++) {
                     TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
                     float val = grid.get(x,y);
                     if (l == 0 ) {
-                        StaticTiledMapTile staticTiledMapTile = new StaticTiledMapTile(floorTexture[7][1]);
-                        staticTiledMapTile.getProperties().put("solid",false);
+                        if (val == 0f) {
+                            staticTiledMapTile = new StaticTiledMapTile(floorTexture[7][1]);
+                            staticTiledMapTile.getProperties().put("solid", false);
+                        }
                         if (val == 0.5f) {
-                            staticTiledMapTile.setTextureRegion(floorTexture[14][8]);
+                            staticTiledMapTile = new StaticTiledMapTile(floorTexture[14][8]);
+                            if (!playerPositionSetted) {
+                                this.playerPositionX = (x * 16 * 2) + 32;
+                                this.playerPositionY = (y * 16 * 2) + 32;
+                                playerPositionSetted = true;
+                            }
                         }
                         cell.setTile(staticTiledMapTile);
                         tiledMapTileLayer.setCell(x,y,cell);
                     }else{
                         if (val == 1f) {
-                            StaticTiledMapTile staticTiledMapTile = new StaticTiledMapTile(floorTexture[3][3]);
+                            staticTiledMapTile = new StaticTiledMapTile(floorTexture[3][3]);
                             staticTiledMapTile.getProperties().put("solid",true);
                             cell.setTile(staticTiledMapTile);
                             tiledMapTileLayer.setCell(x, y, cell);

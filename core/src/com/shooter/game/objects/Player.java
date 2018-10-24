@@ -23,6 +23,7 @@ public class Player extends Actor {
     private Animation<TextureRegion> currentAnimation;
     private float animationTime = 0f;
     private PlayerMove lastMove = PlayerMove.DOWN;
+    public float velocity = 2f;
 
     public Player (float pos_x, float pos_y) {
         this.setPosition(pos_x ,pos_y);
@@ -106,22 +107,22 @@ public class Player extends Actor {
 
     private void left() {
         currentAnimation = walkLeft;
-        this.moveBy(-2f, 0);
+        this.moveBy(-velocity, 0);
     }
 
     private void right() {
         currentAnimation = walkRight;
-        this.moveBy(2f, 0);
+        this.moveBy(velocity, 0);
     }
 
     private void down() {
         currentAnimation = walkBottom;
-        this.moveBy(0, -2f);
+        this.moveBy(0, -velocity);
     }
 
     private void up() {
         currentAnimation = walkTop;
-        this.moveBy(0, 2f);
+        this.moveBy(0, velocity);
     }
 
 }
