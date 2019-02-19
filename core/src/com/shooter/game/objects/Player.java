@@ -2,11 +2,12 @@ package com.shooter.game.objects;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.shooter.game.helpers.PlayerMove;
 
@@ -24,8 +25,11 @@ public class Player extends Actor {
     private float animationTime = 0f;
     private PlayerMove lastMove = PlayerMove.DOWN;
     public float velocity = 2f;
+    private final TiledMapTileLayer map;
+    private float oldX,oldY;
+    private boolean collision = false;
 
-    public Player (float pos_x, float pos_y) {
+    public Player (float pos_x, float pos_y, TiledMapTileLayer map){
         this.setPosition(pos_x ,pos_y);
         Texture playerSheet = new Texture(Gdx.files.internal("sprite/player.png"));
         TextureRegion[][] textureRegion = TextureRegion.split(playerSheet, playerSheet.getWidth() / 3, playerSheet.getHeight() / 4);
@@ -47,7 +51,8 @@ public class Player extends Actor {
         this.noWalkLeft.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
         this.currentAnimation = noWalkFace;
         //this.setSize(textureRegion[0][1].getTexture().getWidth() * (1/16f) , textureRegion[0][1].getTexture().getHeight() * (1/16f) );
-        this.scaleBy(16f , 16f);
+        //this.scaleBy(16f , 16f);
+        this.map = map;
     }
 
     @Override
@@ -107,22 +112,74 @@ public class Player extends Actor {
 
     private void left() {
         currentAnimation = walkLeft;
+        this.oldX = this.getX();
+        this.oldY = this.getY();
         this.moveBy(-velocity, 0);
+
+        if (isCollision(0,0)) {
+            this.setX(this.oldX);
+            this.setY(this.oldY);
+            collision = false;
+        }
     }
 
     private void right() {
         currentAnimation = walkRight;
+        this.oldX = this.getX();
+        this.oldY = this.getY();
         this.moveBy(velocity, 0);
+
+        if (isCollision(0,0)) {
+            this.setX(this.oldX);
+            this.setY(this.oldY);
+            collision = false;
+        }
     }
 
     private void down() {
         currentAnimation = walkBottom;
+        this.oldX = this.getX();
+        this.oldY = this.getY();
         this.moveBy(0, -velocity);
+
+        if (isCollision(0,0)) {
+            this.setX(this.oldX);
+            this.setY(this.oldY);
+            collision = false;
+        }
     }
 
     private void up() {
         currentAnimation = walkTop;
+        this.oldX = this.getX();
+        this.oldY = this.getY();
         this.moveBy(0, velocity);
+
+        if (isCollision(0,0)) {
+            this.setX(this.oldX);
+            this.setY(this.oldY);
+            collision = false;
+        }
+    }
+
+    private boolean isCollision(int tileX,int tileY) {
+        int posX = (int) this.getX();
+        int posY = (int) this.getY();
+        if (lastMove == PlayerMove.RIGHT) {
+            posX += 18;
+        }
+        if (lastMove == PlayerMove.UP) {
+            posY += 18;
+        }
+        int tileIndexX = (int) ((posX / map.getTileWidth())/2) + tileX;
+        int tileIndexY = (int) ((posY / map.getTileHeight())/2) + tileY;
+        this.debug();
+
+        TiledMapTileLayer.Cell cell = map.getCell(tileIndexX,tileIndexY);
+        if (cell != null && cell.getTile() != null && cell.getTile().getProperties().containsKey("solid")) {
+            return true;
+        }
+        return false;
     }
 
 }

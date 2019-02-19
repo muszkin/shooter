@@ -16,15 +16,12 @@ import com.shooter.game.helpers.Constants;
 public class DungeonGenerator {
 
     private TiledMap tiledMap = new TiledMap();
-    private String layers[] = new String[2];
     private OrthogonalTiledMapRenderer renderer;
     public int playerPositionX = 0;
     public int playerPositionY = 0;
 
     public DungeonGenerator(Stage stage) {
-        layers[0] = "Floor";
-        layers[1] = "Wall";
-        Grid grid = new Grid(100);
+        Grid grid = new Grid((int) stage.getWidth() / 16, (int) stage.getHeight() / 16);
         Texture textureForWalls = new Texture(Gdx.files.internal("sprite/Wall.png"));
         TextureRegion wallTexture[][] = TextureRegion.split(textureForWalls,textureForWalls.getWidth()/21,textureForWalls.getHeight()/51);
         Texture textureForFloors = new Texture(Gdx.files.internal("sprite/Floor.png"));
@@ -40,41 +37,39 @@ public class DungeonGenerator {
         MapLayers mapLayers = getTiledMap().getLayers();
         boolean playerPositionSetted = false;
         StaticTiledMapTile staticTiledMapTile = new StaticTiledMapTile(floorTexture[1][1]);
-        for (int l = 0;l < layers.length; l++) {
-            TiledMapTileLayer tiledMapTileLayer = new TiledMapTileLayer(Constants.worldSizeX,Constants.worldSizeY,16,16);
-            tiledMapTileLayer.setName(layers[l]);
-            for (int x = 0; x < grid.getWidth(); x++) {
-                for (int y = 0; y < grid.getHeight(); y++) {
-                    TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
-                    float val = grid.get(x,y);
-                    if (l == 0 ) {
-                        if (val == 0f) {
-                            staticTiledMapTile = new StaticTiledMapTile(floorTexture[7][1]);
-                            staticTiledMapTile.getProperties().put("solid", false);
+        TiledMapTileLayer tiledMapTileLayer = new TiledMapTileLayer(Constants.worldSizeX,Constants.worldSizeY,16,16);
+        tiledMapTileLayer.setName("map");
+        for (int x = 0; x < grid.getWidth(); x++) {
+            for (int y = 0; y < grid.getHeight(); y++) {
+                TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
+                float val = grid.get(x,y);
+                int tileMode = 0;
+                if (val == 0f) { tileMode = 0;}else if (val == 0.5f) {tileMode = 1;} else {tileMode = 2;}
+                switch (tileMode) {
+                    case 0:
+                        staticTiledMapTile = new StaticTiledMapTile(floorTexture[7][1]);
+                        break;
+                    case 1:
+                        staticTiledMapTile = new StaticTiledMapTile(floorTexture[14][8]);
+                        if (!playerPositionSetted) {
+                            this.playerPositionX = (x * 16 * 2);
+                            this.playerPositionY = (y * 16 * 2);
+                            playerPositionSetted = true;
+                            staticTiledMapTile = new StaticTiledMapTile(floorTexture[17][8]);
                         }
-                        if (val == 0.5f) {
-                            staticTiledMapTile = new StaticTiledMapTile(floorTexture[14][8]);
-                            if (!playerPositionSetted) {
-                                this.playerPositionX = (x * 16 * 2) + 32;
-                                this.playerPositionY = (y * 16 * 2) + 32;
-                                playerPositionSetted = true;
-                            }
-                        }
-                        cell.setTile(staticTiledMapTile);
-                        tiledMapTileLayer.setCell(x,y,cell);
-                    }else{
-                        if (val == 1f) {
-                            staticTiledMapTile = new StaticTiledMapTile(floorTexture[3][3]);
-                            staticTiledMapTile.getProperties().put("solid",true);
-                            cell.setTile(staticTiledMapTile);
-                            tiledMapTileLayer.setCell(x, y, cell);
-                        }
-                    }
-
+                        break;
+                    case 2:
+                        staticTiledMapTile = new StaticTiledMapTile(wallTexture[3][3]);
+                        staticTiledMapTile.getProperties().put("solid",true);
+                        break;
                 }
+                staticTiledMapTile.getProperties().put("x",x);
+                staticTiledMapTile.getProperties().put("y",y);
+                cell.setTile(staticTiledMapTile);
+                tiledMapTileLayer.setCell(x,y,cell);
             }
-            mapLayers.add(tiledMapTileLayer);
         }
+        mapLayers.add(tiledMapTileLayer);
         renderer = new OrthogonalTiledMapRenderer(tiledMap,2f);
 
     }

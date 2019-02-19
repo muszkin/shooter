@@ -29,7 +29,7 @@ public class GameScreen implements Screen {
     public GameScreen(final Game game) {
         this.game = game;
         this.stage = new Stage(new ScreenViewport(new OrthographicCamera(Constants.worldSizeX  ,Constants.worldSizeY )));
-
+        dungeonGenerator = new DungeonGenerator(stage);
 
         stage.addListener(new InputListener(){
             @Override
@@ -40,8 +40,8 @@ public class GameScreen implements Screen {
                 return true;
             }
         });
-        dungeonGenerator = new DungeonGenerator(stage);
-        player = new Player(dungeonGenerator.playerPositionX ,dungeonGenerator.playerPositionY);
+
+        player = new Player(dungeonGenerator.playerPositionX ,dungeonGenerator.playerPositionY,(TiledMapTileLayer) dungeonGenerator.getTiledMap().getLayers().get(0));
         stage.addActor(player);
     }
 
