@@ -4,8 +4,11 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -25,11 +28,15 @@ public class GameScreen implements Screen {
     private Game game;
     private DungeonGenerator dungeonGenerator;
     private Player player;
+    private TiledMapTileLayer map;
+    private final BitmapFont font = new BitmapFont(Gdx.files.internal("font/menu.fnt"),Gdx.files.internal("font/menu.png"),false);
+    private Batch batch;
 
     public GameScreen(final Game game) {
         this.game = game;
         this.stage = new Stage(new ScreenViewport(new OrthographicCamera(Constants.worldSizeX  ,Constants.worldSizeY )));
         dungeonGenerator = new DungeonGenerator(stage);
+        map = (TiledMapTileLayer) dungeonGenerator.getTiledMap().getLayers().get(0);
 
         stage.addListener(new InputListener(){
             @Override
@@ -41,8 +48,9 @@ public class GameScreen implements Screen {
             }
         });
 
-        player = new Player(dungeonGenerator.playerPositionX ,dungeonGenerator.playerPositionY,(TiledMapTileLayer) dungeonGenerator.getTiledMap().getLayers().get(0));
+        player = new Player(dungeonGenerator.playerPositionX ,dungeonGenerator.playerPositionY,map);
         stage.addActor(player);
+        this.batch = stage.getBatch();
     }
 
     @Override
@@ -67,6 +75,10 @@ public class GameScreen implements Screen {
             stage.getCamera().position.y = player.getY();
         }
         stage.act();
+        this.batch.begin();
+        font.setColor(Color.BLUE);
+        font.draw(this.batch,String.format("(%d,%d)",(int)player.getX(),(int)player.getY()),stage.getCamera().position.x - 240,stage.getCamera().position.y - 240);
+        this.batch.end();
         stage.draw();
     }
 

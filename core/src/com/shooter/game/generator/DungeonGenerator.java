@@ -21,7 +21,7 @@ public class DungeonGenerator {
     public int playerPositionY = 0;
 
     public DungeonGenerator(Stage stage) {
-        Grid grid = new Grid((int) stage.getWidth() / 16, (int) stage.getHeight() / 16);
+        Grid grid = new Grid((int) Constants.worldSizeX / 16, (int) Constants.worldSizeY / 16);
         Texture textureForWalls = new Texture(Gdx.files.internal("sprite/Wall.png"));
         TextureRegion wallTexture[][] = TextureRegion.split(textureForWalls,textureForWalls.getWidth()/21,textureForWalls.getHeight()/51);
         Texture textureForFloors = new Texture(Gdx.files.internal("sprite/Floor.png"));
