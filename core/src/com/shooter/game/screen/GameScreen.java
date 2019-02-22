@@ -64,12 +64,12 @@ public class GameScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         dungeonGenerator.getRenderer().setView((OrthographicCamera) stage.getCamera());
         dungeonGenerator.getRenderer().render();
-        if (player.getX() + stage.getViewport().getScreenWidth()/2 >= Constants.worldSizeX ||
+        if (player.getX() + stage.getViewport().getScreenWidth()/2 >= dungeonGenerator.grid.getWidth() * map.getTileWidth() ||
             player.getX() - stage.getViewport().getScreenWidth()/2 <= 0){
         }else{
             stage.getCamera().position.x = player.getX();
         }
-        if (player.getY() + stage.getViewport().getScreenHeight()/2 >= Constants.worldSizeY ||
+        if (player.getY() + stage.getViewport().getScreenHeight()/2 >= dungeonGenerator.grid.getHeight() * map.getTileHeight() ||
             player.getY() - stage.getViewport().getScreenHeight()/2 <= 0) {
         }else {
             stage.getCamera().position.y = player.getY();

@@ -19,9 +19,10 @@ public class DungeonGenerator {
     private OrthogonalTiledMapRenderer renderer;
     public int playerPositionX = 0;
     public int playerPositionY = 0;
+    public Grid grid;
 
     public DungeonGenerator(Stage stage) {
-        Grid grid = new Grid((int) Constants.worldSizeX / 16, (int) Constants.worldSizeY / 16);
+        grid = new Grid((int) Constants.worldSizeX / 16, (int) Constants.worldSizeY / 16);
         Texture textureForWalls = new Texture(Gdx.files.internal("sprite/Wall.png"));
         TextureRegion wallTexture[][] = TextureRegion.split(textureForWalls,textureForWalls.getWidth()/21,textureForWalls.getHeight()/51);
         Texture textureForFloors = new Texture(Gdx.files.internal("sprite/Floor.png"));
@@ -42,6 +43,7 @@ public class DungeonGenerator {
         for (int x = 0; x < grid.getWidth(); x++) {
             for (int y = 0; y < grid.getHeight(); y++) {
                 TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
+                Gdx.app.log("cell",String.format("%d,%d",x,y));
                 float val = grid.get(x,y);
                 int tileMode = 0;
                 if (val == 0f) { tileMode = 0;}else if (val == 0.5f) {tileMode = 1;} else {tileMode = 2;}
@@ -52,10 +54,11 @@ public class DungeonGenerator {
                     case 1:
                         staticTiledMapTile = new StaticTiledMapTile(floorTexture[14][8]);
                         if (!playerPositionSetted) {
-                            this.playerPositionX = (x * 16 * 2);
-                            this.playerPositionY = (y * 16 * 2);
+                            this.playerPositionX = (int) ( (x * tiledMapTileLayer.getTileWidth()) + (tiledMapTileLayer.getTileWidth() / 2));
+                            this.playerPositionY = (int) ( (y * tiledMapTileLayer.getTileHeight()) + (tiledMapTileLayer.getTileHeight() / 2));
                             playerPositionSetted = true;
                             staticTiledMapTile = new StaticTiledMapTile(floorTexture[17][8]);
+                            staticTiledMapTile.getProperties().put("player",true);
                         }
                         break;
                     case 2:
@@ -69,6 +72,7 @@ public class DungeonGenerator {
                 tiledMapTileLayer.setCell(x,y,cell);
             }
         }
+        Gdx.app.log("tileMapTileLayer",String.format("tiledMapTileLayer(%d,%d)",tiledMapTileLayer.getWidth(),tiledMapTileLayer.getHeight()));
         mapLayers.add(tiledMapTileLayer);
         renderer = new OrthogonalTiledMapRenderer(tiledMap,2f);
 
