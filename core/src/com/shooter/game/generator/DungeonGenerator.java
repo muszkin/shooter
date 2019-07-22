@@ -43,7 +43,6 @@ public class DungeonGenerator {
         for (int x = 0; x < grid.getWidth(); x++) {
             for (int y = 0; y < grid.getHeight(); y++) {
                 TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
-                Gdx.app.log("cell",String.format("%d,%d",x,y));
                 float val = grid.get(x,y);
                 int tileMode = 0;
                 if (val == 0f) { tileMode = 0;}else if (val == 0.5f) {tileMode = 1;} else {tileMode = 2;}
@@ -54,8 +53,10 @@ public class DungeonGenerator {
                     case 1:
                         staticTiledMapTile = new StaticTiledMapTile(floorTexture[14][8]);
                         if (!playerPositionSetted) {
-                            this.playerPositionX = (int) ( (x * tiledMapTileLayer.getTileWidth()) + (tiledMapTileLayer.getTileWidth() / 2));
-                            this.playerPositionY = (int) ( (y * tiledMapTileLayer.getTileHeight()) + (tiledMapTileLayer.getTileHeight() / 2));
+                            this.playerPositionX = (int) ( ((x+1) * (tiledMapTileLayer.getTileWidth() * 2)) + (tiledMapTileLayer.getTileWidth() / 2));
+                            this.playerPositionY = (int) ( ((y+1) * (tiledMapTileLayer.getTileHeight() * 2)) + (tiledMapTileLayer.getTileHeight() / 2));
+                            Gdx.app.log("player-cell",String.format("%d,%d",x,y));
+                            Gdx.app.log("player-cord",String.format("%d,%d",this.playerPositionX,this.playerPositionY));
                             playerPositionSetted = true;
                             staticTiledMapTile = new StaticTiledMapTile(floorTexture[17][8]);
                             staticTiledMapTile.getProperties().put("player",true);

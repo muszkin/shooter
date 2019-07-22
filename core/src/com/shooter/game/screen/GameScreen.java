@@ -34,7 +34,7 @@ public class GameScreen implements Screen {
 
     public GameScreen(final Game game) {
         this.game = game;
-        this.stage = new Stage(new ScreenViewport(new OrthographicCamera(Constants.worldSizeX  ,Constants.worldSizeY )));
+        this.stage = new Stage(new ScreenViewport(new OrthographicCamera(Constants.worldSizeX  * 2,Constants.worldSizeY * 2)));
         dungeonGenerator = new DungeonGenerator(stage);
         map = (TiledMapTileLayer) dungeonGenerator.getTiledMap().getLayers().get(0);
 
@@ -48,7 +48,7 @@ public class GameScreen implements Screen {
             }
         });
 
-        player = new Player(dungeonGenerator.playerPositionX ,dungeonGenerator.playerPositionY,map);
+        player = new Player(dungeonGenerator.playerPositionX ,dungeonGenerator.playerPositionY ,map);
         stage.addActor(player);
         this.batch = stage.getBatch();
     }
@@ -64,12 +64,12 @@ public class GameScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         dungeonGenerator.getRenderer().setView((OrthographicCamera) stage.getCamera());
         dungeonGenerator.getRenderer().render();
-        if (player.getX() + stage.getViewport().getScreenWidth()/2 >= dungeonGenerator.grid.getWidth() * map.getTileWidth() ||
+        if (player.getX() + stage.getViewport().getScreenWidth()/2 >= (dungeonGenerator.grid.getWidth() * map.getTileWidth() * 2) ||
             player.getX() - stage.getViewport().getScreenWidth()/2 <= 0){
         }else{
             stage.getCamera().position.x = player.getX();
         }
-        if (player.getY() + stage.getViewport().getScreenHeight()/2 >= dungeonGenerator.grid.getHeight() * map.getTileHeight() ||
+        if (player.getY() + stage.getViewport().getScreenHeight()/2 >= (dungeonGenerator.grid.getHeight() * map.getTileHeight() * 2) ||
             player.getY() - stage.getViewport().getScreenHeight()/2 <= 0) {
         }else {
             stage.getCamera().position.y = player.getY();
