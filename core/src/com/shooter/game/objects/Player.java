@@ -50,8 +50,6 @@ public class Player extends Actor {
         this.noWalkRight.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
         this.noWalkLeft.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
         this.currentAnimation = noWalkFace;
-//        this.setSize(textureRegion[0][1].getTexture().getWidth() * (1/16f) , textureRegion[0][1].getTexture().getHeight() * (1/16f) );
-        this.scaleBy(1f);
         this.map = map;
     }
 
@@ -174,7 +172,6 @@ public class Player extends Actor {
         int tileIndexX = (int) ((posX / map.getTileWidth())/2) + tileX;
         int tileIndexY = (int) ((posY / map.getTileHeight())/2) + tileY;
         this.debug();
-        Gdx.app.log("player-current-cell",String.format("%d,%d",tileIndexX,tileIndexY));
         TiledMapTileLayer.Cell cell = map.getCell(tileIndexX,tileIndexY);
         if (cell != null && cell.getTile() != null && cell.getTile().getProperties().containsKey("solid")) {
             return true;

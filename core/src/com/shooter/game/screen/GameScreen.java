@@ -29,8 +29,6 @@ public class GameScreen implements Screen {
     private DungeonGenerator dungeonGenerator;
     private Player player;
     private TiledMapTileLayer map;
-    private final BitmapFont font = new BitmapFont(Gdx.files.internal("font/menu.fnt"),Gdx.files.internal("font/menu.png"),false);
-    private Batch batch;
 
     public GameScreen(final Game game) {
         this.game = game;
@@ -50,7 +48,6 @@ public class GameScreen implements Screen {
 
         player = new Player(dungeonGenerator.playerPositionX ,dungeonGenerator.playerPositionY ,map);
         stage.addActor(player);
-        this.batch = stage.getBatch();
     }
 
     @Override
@@ -75,10 +72,6 @@ public class GameScreen implements Screen {
             stage.getCamera().position.y = player.getY();
         }
         stage.act();
-        this.batch.begin();
-        font.setColor(Color.BLUE);
-        font.draw(this.batch,String.format("(%d,%d)",(int)player.getX(),(int)player.getY()),stage.getCamera().position.x - 240,stage.getCamera().position.y - 240);
-        this.batch.end();
         stage.draw();
     }
 
