@@ -20,6 +20,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.shooter.game.generator.DungeonGenerator;
 import com.shooter.game.helpers.Constants;
+import com.shooter.game.objects.Enemy;
 import com.shooter.game.objects.Player;
 
 public class GameScreen implements Screen {
@@ -28,6 +29,7 @@ public class GameScreen implements Screen {
     private Game game;
     private DungeonGenerator dungeonGenerator;
     private Player player;
+    private Enemy enemy;
     private TiledMapTileLayer map;
 
     public GameScreen(final Game game) {
@@ -45,9 +47,10 @@ public class GameScreen implements Screen {
                 return true;
             }
         });
-
+        enemy = new Enemy(dungeonGenerator.playerPositionX, dungeonGenerator.playerPositionY,map);
         player = new Player(dungeonGenerator.playerPositionX ,dungeonGenerator.playerPositionY ,map);
         stage.addActor(player);
+        stage.addActor(enemy);
     }
 
     @Override

@@ -6,10 +6,9 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.shooter.game.helpers.PlayerMove;
+import com.shooter.game.helpers.Move;
 
 public class Player extends Actor {
 
@@ -23,7 +22,7 @@ public class Player extends Actor {
     private final Animation<TextureRegion> noWalkRight;
     private Animation<TextureRegion> currentAnimation;
     private float animationTime = 0f;
-    private PlayerMove lastMove = PlayerMove.DOWN;
+    private Move lastMove = Move.DOWN;
     public float velocity = 2f;
     private final TiledMapTileLayer map;
     private float oldX,oldY;
@@ -72,22 +71,22 @@ public class Player extends Actor {
         boolean notMoving = true;
         if (Gdx.input.isKeyPressed(Input.Keys.W) || Gdx.input.isKeyPressed(Input.Keys.UP )) {
             up();
-            this.lastMove = PlayerMove.UP;
+            this.lastMove = Move.UP;
             notMoving = false;
         }
         if (Gdx.input.isKeyPressed(Input.Keys.S) || Gdx.input.isKeyPressed(Input.Keys.DOWN )) {
             down();
-            this.lastMove = PlayerMove.DOWN;
+            this.lastMove = Move.DOWN;
             notMoving = false;
         }
         if (Gdx.input.isKeyPressed(Input.Keys.A) || Gdx.input.isKeyPressed(Input.Keys.LEFT )) {
             left();
-            this.lastMove = PlayerMove.LEFT;
+            this.lastMove = Move.LEFT;
             notMoving = false;
         }
         if (Gdx.input.isKeyPressed(Input.Keys.D) || Gdx.input.isKeyPressed(Input.Keys.RIGHT )) {
             right();
-            this.lastMove = PlayerMove.RIGHT;
+            this.lastMove = Move.RIGHT;
             notMoving = false;
         }
         if (notMoving) {
@@ -163,10 +162,10 @@ public class Player extends Actor {
     private boolean isCollision(int tileX,int tileY) {
         int posX = (int) this.getX();
         int posY = (int) this.getY();
-        if (lastMove == PlayerMove.RIGHT) {
+        if (lastMove == Move.RIGHT) {
             posX += 18;
         }
-        if (lastMove == PlayerMove.UP) {
+        if (lastMove == Move.UP) {
             posY += 18;
         }
         int tileIndexX = (int) ((posX / map.getTileWidth())/2) + tileX;
