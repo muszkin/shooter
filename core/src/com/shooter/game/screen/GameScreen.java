@@ -14,10 +14,9 @@ import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.shooter.game.Shooter;
 import com.shooter.game.generator.DungeonGenerator;
 import com.shooter.game.helpers.Constants;
 import com.shooter.game.objects.Enemy;
@@ -29,14 +28,14 @@ import java.util.List;
 public class GameScreen implements Screen {
 
     private Stage stage;
-    private Game game;
+    private Shooter game;
     private DungeonGenerator dungeonGenerator;
     private Player player;
     private Enemy enemy;
     private TiledMapTileLayer map;
     private List<Enemy> enemyList = new ArrayList<Enemy>();
 
-    public GameScreen(final Game game) {
+    public GameScreen(final Shooter game) {
         this.game = game;
         this.stage = new Stage(new ScreenViewport(new OrthographicCamera(Constants.worldSizeX  * 2,Constants.worldSizeY * 2)));
         dungeonGenerator = new DungeonGenerator(stage);
@@ -51,8 +50,8 @@ public class GameScreen implements Screen {
                 return true;
             }
         });
-        enemy = new Enemy(dungeonGenerator.playerPositionX, dungeonGenerator.playerPositionY,map);
-        player = new Player(dungeonGenerator.playerPositionX ,dungeonGenerator.playerPositionY ,map);
+        enemy = new Enemy(dungeonGenerator.playerPositionX, dungeonGenerator.playerPositionY,map, game);
+        player = new Player(dungeonGenerator.playerPositionX ,dungeonGenerator.playerPositionY ,map, game);
         enemyList.add(enemy);
         stage.addActor(player);
         stage.addActor(enemy);
@@ -79,12 +78,12 @@ public class GameScreen implements Screen {
         }else {
             stage.getCamera().position.y = player.getY();
         }
-        stage.act();
-        for (Enemy e : enemyList) {
+        for (Enemy e : this.game.getEnemies()) {
             if (e.getBounds().overlaps(player.getBounds())){
                 e.setIsCollision(true);
             }
         }
+        stage.act();
         stage.draw();
     }
 

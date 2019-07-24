@@ -1,5 +1,6 @@
 package com.shooter.game.objects;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -8,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.shooter.game.Shooter;
 import com.shooter.game.helpers.Move;
 
 import static com.shooter.game.helpers.Move.*;
@@ -32,12 +34,16 @@ public class Enemy extends Actor {
   private final TiledMapTileLayer map;
   private Move direction = null;
   private Rectangle bounds;
+  private Shooter game;
 
 
-  public Enemy(float pos_x,float pos_y, TiledMapTileLayer map) {
+  public Enemy(float pos_x, float pos_y, TiledMapTileLayer map, Shooter game) {
+    this.game = game;
     this.setPosition(pos_x,pos_y);
     Texture enemySheet = new Texture(Gdx.files.internal("sprite/enemy.png"));
     TextureRegion[][] textureRegion = TextureRegion.split(enemySheet, enemySheet.getWidth() / 3, enemySheet.getHeight() / 4);
+    this.setWidth(textureRegion[0][0].getRegionWidth());
+    this.setHeight(textureRegion[0][0].getRegionHeight());
     this.walkTop = new Animation<TextureRegion>(0.1f,(textureRegion[0][0]),(textureRegion[0][1]),(textureRegion[0][2]));
     this.walkBottom = new Animation<TextureRegion>(0.1f,(textureRegion[2][0]),(textureRegion[2][1]),(textureRegion[2][2]));
     this.walkLeft = new Animation<TextureRegion>(0.1f,(textureRegion[3][0]),(textureRegion[3][1]),(textureRegion[3][2]));
@@ -57,6 +63,7 @@ public class Enemy extends Actor {
     this.currentAnimation = noWalkFace;
     this.map = map;
     bounds = new Rectangle((int)getX(), (int)getY(), (int)getWidth(), (int)getHeight());
+    game.addEnemy(this);
   }
 
   public Rectangle getBounds() {
@@ -83,7 +90,7 @@ public class Enemy extends Actor {
   private void move() {
     boolean notMoving = true;
 
-    if (this.direction == null) {
+    if (this.direction == null || isCollision()) {
       getDirection();
     }
     if (this.direction != null) {
@@ -145,6 +152,7 @@ public class Enemy extends Actor {
         this.direction = RIGHT;
         break;
     }
+    setIsCollision(false);
   }
 
   private void left() {

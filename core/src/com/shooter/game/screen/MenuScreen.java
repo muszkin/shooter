@@ -17,13 +17,14 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.shooter.game.Shooter;
 
 public class MenuScreen implements Screen {
 
-    private final Game game;
+    private final Shooter game;
     private Stage stage;
 
-    public MenuScreen(final Game game) {
+    public MenuScreen(final Shooter game) {
         this.game = game;
         this.stage =  new Stage(new ScreenViewport(new OrthographicCamera()));
         int rowHeight = Gdx.graphics.getHeight() / 16;
