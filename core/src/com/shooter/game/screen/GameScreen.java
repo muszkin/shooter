@@ -23,6 +23,9 @@ import com.shooter.game.helpers.Constants;
 import com.shooter.game.objects.Enemy;
 import com.shooter.game.objects.Player;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class GameScreen implements Screen {
 
     private Stage stage;
@@ -31,6 +34,7 @@ public class GameScreen implements Screen {
     private Player player;
     private Enemy enemy;
     private TiledMapTileLayer map;
+    private List<Enemy> enemyList = new ArrayList<Enemy>();
 
     public GameScreen(final Game game) {
         this.game = game;
@@ -49,6 +53,7 @@ public class GameScreen implements Screen {
         });
         enemy = new Enemy(dungeonGenerator.playerPositionX, dungeonGenerator.playerPositionY,map);
         player = new Player(dungeonGenerator.playerPositionX ,dungeonGenerator.playerPositionY ,map);
+        enemyList.add(enemy);
         stage.addActor(player);
         stage.addActor(enemy);
     }
@@ -75,6 +80,11 @@ public class GameScreen implements Screen {
             stage.getCamera().position.y = player.getY();
         }
         stage.act();
+        for (Enemy e : enemyList) {
+            if (e.getBounds().overlaps(player.getBounds())){
+                e.setIsCollision(true);
+            }
+        }
         stage.draw();
     }
 

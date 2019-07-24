@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.shooter.game.helpers.Move;
 
@@ -27,6 +28,9 @@ public class Player extends Actor {
     private final TiledMapTileLayer map;
     private float oldX,oldY;
     private boolean collision = false;
+    private Rectangle bounds;
+
+
 
     public Player (float pos_x, float pos_y, TiledMapTileLayer map){
         this.setPosition(pos_x ,pos_y);
@@ -50,6 +54,12 @@ public class Player extends Actor {
         this.noWalkLeft.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
         this.currentAnimation = noWalkFace;
         this.map = map;
+        bounds = new Rectangle((int)getX(), (int)getY(), (int)getWidth(), (int)getHeight());
+
+    }
+
+    public Rectangle getBounds() {
+        return bounds;
     }
 
     @Override
@@ -63,7 +73,10 @@ public class Player extends Actor {
     public void act(float delta) {
         super.act(delta);
         this.setPosition(this.getX(),this.getY());
+
         getInput();
+        bounds.setX((int)this.getX());
+        bounds.setY((int)this.getY());
         animationTime += delta;
     }
 

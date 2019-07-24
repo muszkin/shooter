@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.shooter.game.helpers.Move;
 
@@ -30,6 +31,7 @@ public class Enemy extends Actor {
   private Move lastMove = DOWN;
   private final TiledMapTileLayer map;
   private Move direction = null;
+  private Rectangle bounds;
 
 
   public Enemy(float pos_x,float pos_y, TiledMapTileLayer map) {
@@ -54,6 +56,11 @@ public class Enemy extends Actor {
     this.noWalkLeft.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
     this.currentAnimation = noWalkFace;
     this.map = map;
+    bounds = new Rectangle((int)getX(), (int)getY(), (int)getWidth(), (int)getHeight());
+  }
+
+  public Rectangle getBounds() {
+    return bounds;
   }
 
   @Override
@@ -68,6 +75,8 @@ public class Enemy extends Actor {
     super.act(delta);
     move();
     this.setPosition(this.getX(),this.getY());
+    bounds.setX((int)this.getX());
+    bounds.setY((int)this.getY());
     animationTime += delta;
   }
 
@@ -211,5 +220,13 @@ public class Enemy extends Actor {
       getDirection();
     }
     return false;
+  }
+
+  public boolean isCollision() {
+    return collision;
+  }
+
+  public void setIsCollision(boolean isCollision) {
+    this.collision = isCollision;
   }
 }
