@@ -50,6 +50,7 @@ public class GameScreen implements Screen {
                 return true;
             }
         });
+        //enemy = new Enemy(dungeonGenerator.enemyPositionX, dungeonGenerator.enemyPositionY,map, game);
         enemy = new Enemy(dungeonGenerator.playerPositionX, dungeonGenerator.playerPositionY,map, game);
         player = new Player(dungeonGenerator.playerPositionX ,dungeonGenerator.playerPositionY ,map, game);
         enemyList.add(enemy);
