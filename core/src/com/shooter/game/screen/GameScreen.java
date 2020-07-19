@@ -19,6 +19,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.shooter.game.Shooter;
 import com.shooter.game.generator.DungeonGenerator;
 import com.shooter.game.helpers.Constants;
+import com.shooter.game.objects.Bullet;
 import com.shooter.game.objects.Enemy;
 import com.shooter.game.objects.Player;
 
@@ -50,10 +51,9 @@ public class GameScreen implements Screen {
                 return true;
             }
         });
-        //enemy = new Enemy(dungeonGenerator.enemyPositionX, dungeonGenerator.enemyPositionY,map, game);
         enemy = new Enemy(dungeonGenerator.playerPositionX, dungeonGenerator.playerPositionY,map, game);
-        player = new Player(dungeonGenerator.playerPositionX ,dungeonGenerator.playerPositionY ,map, game);
         enemyList.add(enemy);
+        player = new Player(dungeonGenerator.playerPositionX ,dungeonGenerator.playerPositionY ,map, game);
         stage.addActor(player);
         stage.addActor(enemy);
     }
@@ -82,6 +82,23 @@ public class GameScreen implements Screen {
         for (Enemy e : this.game.getEnemies()) {
             if (e.getBounds().overlaps(player.getBounds())){
                 e.setIsCollision(true);
+            }
+        }
+        for (Actor actor: this.stage.getActors()) {
+            if (actor instanceof Bullet) {
+                Bullet bullet = (Bullet) actor;
+                if (bullet.collision) {
+                    actor.remove();
+                }
+                for (Enemy e: this.game.getEnemies()) {
+                    if (bullet.getBounds().overlaps(enemy.getBounds())) {
+                        actor.remove();
+                        enemy.hp -= bullet.dmg;
+                        if (enemy.hp <= 0) {
+                            enemy.dead = true;
+                        }
+                    }
+                }
             }
         }
         stage.act();

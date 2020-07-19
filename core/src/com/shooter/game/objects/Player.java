@@ -28,7 +28,7 @@ public class Player extends Actor {
     public float velocity = 2f;
     private final TiledMapTileLayer map;
     private float oldX,oldY;
-    private boolean collision = false;
+    public boolean collision = false;
     private Rectangle bounds;
     private Shooter game;
 
@@ -108,6 +108,9 @@ public class Player extends Actor {
             right();
             this.lastMove = Move.RIGHT;
             notMoving = false;
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
+            this.getStage().addActor(new Bullet(this.getX() + (getWidth()/2), this.getY() + (getHeight()/2),this.map, this.lastMove));
         }
         if (notMoving) {
             switch(this.lastMove){

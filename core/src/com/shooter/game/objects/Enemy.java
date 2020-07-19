@@ -25,6 +25,7 @@ public class Enemy extends Actor {
   private final Animation<TextureRegion> noWalkBack;
   private final Animation<TextureRegion> noWalkLeft;
   private final Animation<TextureRegion> noWalkRight;
+  public boolean dead = false;
   private Animation<TextureRegion> currentAnimation;
   private float animationTime = 0f;
   private float oldX,oldY;
@@ -35,12 +36,13 @@ public class Enemy extends Actor {
   private Move direction = null;
   private Rectangle bounds;
   private Shooter game;
+  public float hp = 100;
 
 
   public Enemy(float pos_x, float pos_y, TiledMapTileLayer map, Shooter game) {
     this.game = game;
     this.setPosition(pos_x,pos_y);
-    Texture enemySheet = new Texture(Gdx.files.internal("sprite/enemy.png"));
+    Texture enemySheet = new Texture(Gdx.files.internal("sprite/player.png"));
     TextureRegion[][] textureRegion = TextureRegion.split(enemySheet, enemySheet.getWidth() / 3, enemySheet.getHeight() / 4);
     this.setWidth(textureRegion[0][0].getRegionWidth());
     this.setHeight(textureRegion[0][0].getRegionHeight());
@@ -85,6 +87,9 @@ public class Enemy extends Actor {
     bounds.setX((int)this.getX());
     bounds.setY((int)this.getY());
     animationTime += delta;
+    if (dead) {
+      remove();
+    }
   }
 
   private void move() {
