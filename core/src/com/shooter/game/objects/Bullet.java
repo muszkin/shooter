@@ -11,20 +11,17 @@ import com.shooter.game.Shooter;
 
 public class Bullet extends Actor {
 
+    private final Vector2 mousePosition;
+    private final Vector2 startPosition;
     public boolean collision = false;
+    public float velocity = 50f;
     private final TiledMapTileLayer map;
     private Rectangle bounds;
     private Shooter game;
     private Texture texture;
     public float dmg = 5;
-
-    private static final float MAX_SPEED = 50f;
-
-    private Vector2 position = new Vector2();
-    private Vector2 velocity = new Vector2();
-    private Vector2 movement = new Vector2();
-    private Vector2 target = new Vector2();
-    private Vector2 direction = new Vector2();
+    private Vector2 direction;
+    private Vector2 position;
 
 
 
@@ -35,11 +32,12 @@ public class Bullet extends Actor {
         this.setWidth(7);
         this.setHeight(7);
         this.map = map;
+        this.mousePosition = mousePosition;
+        this.position = startPosition;
+        this.startPosition = startPosition;
         bounds = new Rectangle((int)position.x, (int)position.y, (int)getWidth(), (int)getHeight());
-        target.set(mousePosition);
-        position.set(startPosition);
-        direction.set(target).sub(position).nor();
-        velocity = new Vector2(direction).scl(MAX_SPEED);
+        direction = mousePosition.sub(startPosition).nor();
+        direction.nor();
     }
 
     public Rectangle getBounds() {
@@ -55,18 +53,10 @@ public class Bullet extends Actor {
     @Override
     public void act(float delta) {
         super.act(delta);
-        movement.set(velocity).scl(delta);
-        if (position.dst2(target) > movement.len2()) {
-            position.add(movement);
-        } else {
-            position.set(target);
-        }
-        position.add(movement);
+        position = new Vector2(position.x - (direction.x * delta * velocity), position.y - (direction.y * delta* velocity));
         isCollision();
         bounds.setX((int)position.x);
         bounds.setY((int)position.y);
-        setX(position.x);
-        setY(position.y);
     }
 
     private void isCollision() {

@@ -13,14 +13,12 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.shooter.game.Shooter;
 import com.shooter.game.generator.DungeonGenerator;
 import com.shooter.game.helpers.Constants;
-import com.shooter.game.objects.AbstractObject;
 import com.shooter.game.objects.Bullet;
 import com.shooter.game.objects.Enemy;
 import com.shooter.game.objects.Player;
@@ -36,7 +34,7 @@ public class GameScreen implements Screen {
     private Player player;
     private Enemy enemy;
     private TiledMapTileLayer map;
-    private List<AbstractObject> objects = new ArrayList<AbstractObject>();
+    private List<Enemy> enemyList = new ArrayList<Enemy>();
     private final int ENEMY_LIMIT = 5;
 
     public GameScreen(final Shooter game) {
@@ -58,12 +56,13 @@ public class GameScreen implements Screen {
             int countPosition = dungeonGenerator.possibleEnemyPositions.size();
             int randomPosition = (int) (Math.random() * countPosition);
             if (randomPosition > countPosition) randomPosition = countPosition;
-            enemy = new Enemy(new Vector2(dungeonGenerator.possibleEnemyPositions.get(randomPosition)[0],dungeonGenerator.possibleEnemyPositions.get(randomPosition)[1]), map);
-            objects.add(enemy);
+            enemy = new Enemy(dungeonGenerator.possibleEnemyPositions.get(randomPosition)[0],dungeonGenerator.possibleEnemyPositions.get(randomPosition)[1], map, game);
+            enemyList.add(enemy);
+            stage.addActor(enemy);
         }
 
-        player = new Player(new Vector2(dungeonGenerator.playerPositionX ,dungeonGenerator.playerPositionY), map);
-        objects.add(player);
+        player = new Player(dungeonGenerator.playerPositionX ,dungeonGenerator.playerPositionY ,map, game);
+        stage.addActor(player);
     }
 
     @Override
@@ -77,23 +76,37 @@ public class GameScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         dungeonGenerator.getRenderer().setView((OrthographicCamera) stage.getCamera());
         dungeonGenerator.getRenderer().render();
-        if (player.getPosition().x + (float)stage.getViewport().getScreenWidth()/2 >= (dungeonGenerator.grid.getWidth() * map.getTileWidth() * 2) ||
-            player.getPosition().x - (float)stage.getViewport().getScreenWidth()/2 <= 0){
+        if (player.getX() + stage.getViewport().getScreenWidth()/2 >= (dungeonGenerator.grid.getWidth() * map.getTileWidth() * 2) ||
+            player.getX() - stage.getViewport().getScreenWidth()/2 <= 0){
         }else{
-            stage.getCamera().position.x = player.getPosition().x;
+            stage.getCamera().position.x = player.getX();
         }
-        if (player.getPosition().y + (float)stage.getViewport().getScreenHeight()/2 >= (dungeonGenerator.grid.getHeight() * map.getTileHeight() * 2) ||
-            player.getPosition().y - (float)stage.getViewport().getScreenHeight()/2 <= 0) {
+        if (player.getY() + stage.getViewport().getScreenHeight()/2 >= (dungeonGenerator.grid.getHeight() * map.getTileHeight() * 2) ||
+            player.getY() - stage.getViewport().getScreenHeight()/2 <= 0) {
         }else {
-            stage.getCamera().position.y = player.getPosition().y;
-        }
-        for (AbstractObject object : objects) {
-            object.update(delta);
-            object.draw(stage.getBatch(), 1);
+            stage.getCamera().position.y = player.getY();
         }
         for (Enemy e : this.game.getEnemies()) {
             if (e.getBounds().overlaps(player.getBounds())){
-                e.setCollision(true);
+                e.setIsCollision(true);
+            }
+        }
+        for (Actor actor: this.stage.getActors()) {
+            if (actor instanceof Bullet) {
+                Bullet bullet = (Bullet) actor;
+                if (bullet.collision) {
+                    actor.remove();
+                }
+                for (Enemy enemy : game.getEnemies() ) {
+                    if (bullet.getBounds().overlaps(enemy.getBounds())) {
+                        enemy.hp -= bullet.dmg;
+                        bullet.remove();
+                        if (enemy.hp <= 0) {
+                            enemy.dead = true;
+
+                        }
+                    }
+                }
             }
         }
         stage.act();
