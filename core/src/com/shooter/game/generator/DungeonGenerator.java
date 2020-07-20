@@ -13,14 +13,18 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.github.czyzby.noise4j.map.Grid;
 import com.shooter.game.helpers.Constants;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class DungeonGenerator {
 
     private TiledMap tiledMap = new TiledMap();
     private OrthogonalTiledMapRenderer renderer;
     public int playerPositionX = 0;
     public int playerPositionY = 0;
-    public int enemyPositionX = 0;
-    public int enemyPositionY = 0;
+    public List<Float[]> possibleEnemyPositions = new ArrayList<Float[]>();
     public Grid grid;
 
     public DungeonGenerator(Stage stage) {
@@ -61,8 +65,10 @@ public class DungeonGenerator {
                             staticTiledMapTile = new StaticTiledMapTile(floorTexture[17][8]);
                             staticTiledMapTile.getProperties().put("player",true);
                         }
-                        this.enemyPositionX = (int) ((x * (tiledMapTileLayer.getTileWidth() * 2)));
-                        this.enemyPositionY = (int) ( (y * (tiledMapTileLayer.getTileHeight() * 2)));
+                        Float[] enemyPosition = new Float[2];
+                        enemyPosition[0] = (x * (tiledMapTileLayer.getTileWidth() * 2));
+                        enemyPosition[1] = (y * (tiledMapTileLayer.getTileHeight() * 2));
+                        possibleEnemyPositions.add(enemyPosition);
                         break;
                     case 2:
                         staticTiledMapTile = new StaticTiledMapTile(wallTexture[3][3]);

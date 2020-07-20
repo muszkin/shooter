@@ -88,6 +88,7 @@ public class Enemy extends Actor {
     bounds.setY((int)this.getY());
     animationTime += delta;
     if (dead) {
+      bounds.set(0,0,0,0);
       remove();
     }
   }

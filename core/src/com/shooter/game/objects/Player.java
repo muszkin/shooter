@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.shooter.game.Shooter;
 import com.shooter.game.helpers.Move;
@@ -22,6 +23,7 @@ public class Player extends Actor {
     private final Animation<TextureRegion> noWalkBack;
     private final Animation<TextureRegion> noWalkLeft;
     private final Animation<TextureRegion> noWalkRight;
+    private float fireDelay;
     private Animation<TextureRegion> currentAnimation;
     private float animationTime = 0f;
     private Move lastMove = Move.DOWN;
@@ -31,7 +33,7 @@ public class Player extends Actor {
     public boolean collision = false;
     private Rectangle bounds;
     private Shooter game;
-
+    private final float MAX_SHOOTING_SPEED = 1/15f;
 
 
     public Player (float pos_x, float pos_y, TiledMapTileLayer map, Shooter game){
@@ -60,7 +62,7 @@ public class Player extends Actor {
         this.currentAnimation = noWalkFace;
         this.map = map;
         bounds = new Rectangle((int)getX(), (int)getY(), (int)getWidth(), (int)getHeight());
-
+        fireDelay = MAX_SHOOTING_SPEED;
     }
 
     public Rectangle getBounds() {
@@ -80,14 +82,14 @@ public class Player extends Actor {
         super.act(delta);
         this.setPosition(this.getX(),this.getY());
 
-        getInput();
+        getInput(delta);
         bounds.setX((int)this.getX());
         bounds.setY((int)this.getY());
 
         animationTime += delta;
     }
 
-    private void getInput() {
+    private void getInput(float delta) {
         boolean notMoving = true;
         if (Gdx.input.isKeyPressed(Input.Keys.W) || Gdx.input.isKeyPressed(Input.Keys.UP )) {
             up();
@@ -110,7 +112,15 @@ public class Player extends Actor {
             notMoving = false;
         }
         if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
-            this.getStage().addActor(new Bullet(this.getX() + (getWidth()/2), this.getY() + (getHeight()/2),this.map, this.lastMove));
+            fireDelay -= delta;
+            if (fireDelay <= 0) {
+                this.getStage().addActor(
+                        new Bullet(
+                                new Vector2(this.getX() + (getWidth() / 2), this.getY() + (getHeight() / 2)),
+                                this.map,
+                                new Vector2(Gdx.input.getX(), Gdx.input.getY())));
+                fireDelay += 0.2;
+            }
         }
         if (notMoving) {
             switch(this.lastMove){

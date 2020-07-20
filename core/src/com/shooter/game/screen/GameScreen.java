@@ -35,6 +35,7 @@ public class GameScreen implements Screen {
     private Enemy enemy;
     private TiledMapTileLayer map;
     private List<Enemy> enemyList = new ArrayList<Enemy>();
+    private final int ENEMY_LIMIT = 5;
 
     public GameScreen(final Shooter game) {
         this.game = game;
@@ -51,11 +52,17 @@ public class GameScreen implements Screen {
                 return true;
             }
         });
-        enemy = new Enemy(dungeonGenerator.playerPositionX, dungeonGenerator.playerPositionY,map, game);
-        enemyList.add(enemy);
+        for (int i = 0; i < ENEMY_LIMIT; i++) {
+            int countPosition = dungeonGenerator.possibleEnemyPositions.size();
+            int randomPosition = (int) (Math.random() * countPosition);
+            if (randomPosition > countPosition) randomPosition = countPosition;
+            enemy = new Enemy(dungeonGenerator.possibleEnemyPositions.get(randomPosition)[0],dungeonGenerator.possibleEnemyPositions.get(randomPosition)[1], map, game);
+            enemyList.add(enemy);
+            stage.addActor(enemy);
+        }
+
         player = new Player(dungeonGenerator.playerPositionX ,dungeonGenerator.playerPositionY ,map, game);
         stage.addActor(player);
-        stage.addActor(enemy);
     }
 
     @Override
@@ -90,12 +97,13 @@ public class GameScreen implements Screen {
                 if (bullet.collision) {
                     actor.remove();
                 }
-                for (Enemy e: this.game.getEnemies()) {
+                for (Enemy enemy : game.getEnemies() ) {
                     if (bullet.getBounds().overlaps(enemy.getBounds())) {
-                        actor.remove();
                         enemy.hp -= bullet.dmg;
+                        bullet.remove();
                         if (enemy.hp <= 0) {
                             enemy.dead = true;
+
                         }
                     }
                 }
