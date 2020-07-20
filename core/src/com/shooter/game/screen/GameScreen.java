@@ -35,7 +35,7 @@ public class GameScreen implements Screen {
     private Enemy enemy;
     private TiledMapTileLayer map;
     private List<Enemy> enemyList = new ArrayList<Enemy>();
-    private final int ENEMY_LIMIT = 5;
+    private final int ENEMY_LIMIT = 15;
 
     public GameScreen(final Shooter game) {
         this.game = game;

@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.shooter.game.Shooter;
 import com.shooter.game.helpers.Move;
@@ -118,7 +119,7 @@ public class Player extends Actor {
                         new Bullet(
                                 new Vector2(this.getX() + (getWidth() / 2), this.getY() + (getHeight() / 2)),
                                 this.map,
-                                new Vector2(Gdx.input.getX(), Gdx.input.getY())));
+                                new Vector2(getMousePosInGameWorld().x, getMousePosInGameWorld().y)));
                 fireDelay += 0.2;
             }
         }
@@ -209,6 +210,10 @@ public class Player extends Actor {
             return true;
         }
         return false;
+    }
+
+    Vector3 getMousePosInGameWorld() {
+        return this.getStage().getCamera().unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
     }
 
 }

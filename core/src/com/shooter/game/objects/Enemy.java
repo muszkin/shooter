@@ -37,12 +37,14 @@ public class Enemy extends Actor {
   private Rectangle bounds;
   private Shooter game;
   public float hp = 100;
+  private final Texture hpTexture;
 
 
   public Enemy(float pos_x, float pos_y, TiledMapTileLayer map, Shooter game) {
     this.game = game;
     this.setPosition(pos_x,pos_y);
     Texture enemySheet = new Texture(Gdx.files.internal("sprite/player.png"));
+    hpTexture = new Texture(Gdx.files.internal("sprite/hp.png"));
     TextureRegion[][] textureRegion = TextureRegion.split(enemySheet, enemySheet.getWidth() / 3, enemySheet.getHeight() / 4);
     this.setWidth(textureRegion[0][0].getRegionWidth());
     this.setHeight(textureRegion[0][0].getRegionHeight());
@@ -77,6 +79,10 @@ public class Enemy extends Actor {
     super.draw(batch, parentAlpha);
     TextureRegion currentFrame = currentAnimation.getKeyFrame(animationTime);
     batch.draw(currentFrame,getX(),getY());
+    if (hp < 100) {
+      int width = (int)((hp * 32) / 100);
+      batch.draw(hpTexture,getX(), getY() + getHeight() + 10,width,4);
+    }
   }
 
   @Override
