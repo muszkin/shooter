@@ -64,8 +64,10 @@ public class Enemy extends AbstractObject {
 
   @Override
   public void draw(Batch batch, float parentAlpha) {
+    batch.begin();
     TextureRegion currentFrame = currentAnimation.getKeyFrame(animationTime);
     batch.draw(currentFrame,getPosition().x,getPosition().y);
+    batch.end();
   }
 
   @Override
@@ -155,7 +157,8 @@ public class Enemy extends AbstractObject {
     getPosition().add(new Vector2(-velocity, 0));
 
     if (isCollision()) {
-      moveBack();
+      getPosition().add(new Vector2(oldX, oldY));
+      collision = false;
     }
   }
 
@@ -166,7 +169,8 @@ public class Enemy extends AbstractObject {
     getPosition().add(new Vector2(velocity, 0));
 
     if (isCollision()) {
-      moveBack();
+      getPosition().add(new Vector2(oldX, oldY));
+      collision = false;
     }
   }
 
@@ -177,7 +181,8 @@ public class Enemy extends AbstractObject {
     getPosition().add(new Vector2(0, -velocity));
 
     if (isCollision()) {
-      moveBack();;
+      getPosition().add(new Vector2(oldX, oldY));
+      collision = false;
     }
   }
 
@@ -188,7 +193,8 @@ public class Enemy extends AbstractObject {
     getPosition().add(new Vector2(0, velocity));
 
     if (isCollision()) {
-      moveBack();
+      getPosition().add(new Vector2(oldX, oldY));
+      collision = false;
     }
   }
 
@@ -217,9 +223,5 @@ public class Enemy extends AbstractObject {
 
   public void setCollision(boolean collision) {
     this.collision = collision;
-  }
-  private void moveBack(){
-    getPosition().set(new Vector2(oldX, oldY));
-    collision = false;
   }
 }
