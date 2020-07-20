@@ -27,7 +27,7 @@ public class DungeonGenerator {
     public List<Float[]> possibleEnemyPositions = new ArrayList<Float[]>();
     public Grid grid;
 
-    public DungeonGenerator(Stage stage) {
+    public DungeonGenerator() {
         grid = new Grid((int) Constants.worldSizeX / 16, (int) Constants.worldSizeY / 16);
         Texture textureForWalls = new Texture(Gdx.files.internal("sprite/Wall.png"));
         TextureRegion wallTexture[][] = TextureRegion.split(textureForWalls,textureForWalls.getWidth()/21,textureForWalls.getHeight()/51);

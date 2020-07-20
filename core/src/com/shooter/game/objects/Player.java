@@ -25,7 +25,7 @@ public class Player extends AbstractObject {
     private Animation<TextureRegion> currentAnimation;
     private float animationTime = 0f;
     private Move lastMove = Move.DOWN;
-    public float velocity = 2f;
+    public float velocity = 5f;
     private float oldX,oldY;
     public boolean collision = false;
     private final float MAX_SHOOTING_SPEED = 1/15f;
@@ -62,10 +62,8 @@ public class Player extends AbstractObject {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        batch.begin();
         TextureRegion currentFrame = currentAnimation.getKeyFrame(animationTime);
         batch.draw(currentFrame,getPosition().x,getPosition().y);
-        batch.end();
     }
 
     @Override
@@ -129,8 +127,7 @@ public class Player extends AbstractObject {
         getPosition().add(new Vector2(-velocity, 0));
 
         if (isCollision()) {
-            getPosition().add(new Vector2(oldX, oldY));
-            collision = false;
+            moveBack();
         }
     }
 
@@ -141,8 +138,7 @@ public class Player extends AbstractObject {
         getPosition().add(new Vector2(velocity, 0));
 
         if (isCollision()) {
-            getPosition().add(new Vector2(oldX, oldY));
-            collision = false;
+            moveBack();
         }
     }
 
@@ -153,8 +149,7 @@ public class Player extends AbstractObject {
         getPosition().add(new Vector2(0, -velocity));
 
         if (isCollision()) {
-            getPosition().add(new Vector2(oldX, oldY));
-            collision = false;
+            moveBack();
         }
     }
 
@@ -165,8 +160,7 @@ public class Player extends AbstractObject {
         getPosition().add(new Vector2(0, velocity));
 
         if (isCollision()) {
-            getPosition().add(new Vector2(oldX, oldY));
-            collision = false;
+            moveBack();
         }
     }
 
@@ -186,4 +180,8 @@ public class Player extends AbstractObject {
         return cell != null && cell.getTile() != null && cell.getTile().getProperties().containsKey("solid");
     }
 
+    private void moveBack(){
+        getPosition().set(new Vector2(oldX, oldY));
+        collision = false;
+    }
 }
