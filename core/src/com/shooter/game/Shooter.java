@@ -2,6 +2,7 @@ package com.shooter.game;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.shooter.game.objects.AbstractObject;
 import com.shooter.game.objects.Bullet;
 import com.shooter.game.objects.Enemy;
 import com.shooter.game.screen.MenuScreen;
@@ -11,8 +12,8 @@ import java.util.List;
 
 public class Shooter extends Game {
 
-	private List<Enemy> enemies =  new ArrayList<Enemy>();
-	private List<Bullet> bullets = new ArrayList<Bullet>();
+	public static final List<AbstractObject> objects = new ArrayList<AbstractObject>();
+	public static final List<AbstractObject> awaiting = new ArrayList<AbstractObject>();
 
 	@Override
 	public void create () {
@@ -29,23 +30,5 @@ public class Shooter extends Game {
 
 	}
 
-	public List<Enemy> getEnemies() {
-		return enemies;
-	}
 
-	public void addEnemy(Enemy enemy) {
-		this.enemies.add(enemy);
-	}
-
-	public void setEnemies(List<Enemy> enemies) {
-		this.enemies = enemies;
-	}
-
-	public List<Bullet> getBullets() {
-		return bullets;
-	}
-
-	public void setBullets(List<Bullet> bullets) {
-		this.bullets = bullets;
-	}
 }
