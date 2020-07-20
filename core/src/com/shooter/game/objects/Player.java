@@ -1,6 +1,5 @@
 package com.shooter.game.objects;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
@@ -10,9 +9,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.shooter.game.Shooter;
 import com.shooter.game.helpers.Move;
-import com.shooter.game.screen.GameScreen;
 
 public class Player extends AbstractObject {
 
@@ -24,7 +21,7 @@ public class Player extends AbstractObject {
     private final Animation<TextureRegion> noWalkBack;
     private final Animation<TextureRegion> noWalkLeft;
     private final Animation<TextureRegion> noWalkRight;
-    public float fireDelay;
+    private float fireDelay;
     private Animation<TextureRegion> currentAnimation;
     private float animationTime = 0f;
     private Move lastMove = Move.DOWN;
@@ -98,6 +95,12 @@ public class Player extends AbstractObject {
             right();
             this.lastMove = Move.RIGHT;
             notMoving = false;
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
+            fireDelay -= delta;
+            if (fireDelay <= 0) {
+                fireDelay += 0.2;
+            }
         }
         if (notMoving) {
             switch(this.lastMove){
@@ -181,5 +184,4 @@ public class Player extends AbstractObject {
         getPosition().set(new Vector2(oldX, oldY));
         collision = false;
     }
-
 }
