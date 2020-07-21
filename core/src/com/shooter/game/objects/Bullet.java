@@ -23,7 +23,6 @@ public class Bullet extends Actor {
     private final Vector2 target = new Vector2();
 
     public Bullet(Vector2 startPosition, TiledMapTileLayer map, Vector2 mousePosition) {
-        System.out.println(String.format("Start(%d,%d)-End(%d,%d)",(int)startPosition.x, (int)startPosition.y, (int) mousePosition.x, (int)mousePosition.y));
         texture = new Texture(Gdx.files.internal("sprite/bullet.png"));
         setWidth(texture.getWidth());
         setHeight(texture.getHeight());
